@@ -4,5 +4,10 @@ namespace ChessEngine.Core.Calculation;
 
 public interface IPieceCalculus
 {
-    ulong PiecesAttackedByRooks(ABoard board, bool color);
+    ulong PawnAttack(ulong enemy, ulong piece, bool color, ulong enPassantSquare);
+    ulong KnightAttack(ulong enemy, ulong piece);
+    ulong BishopAttack(ulong own, ulong enemy, ulong piece);
+    ulong RookAttack(ulong own, ulong enemy, ulong piece);
+    ulong QueenAttack(ulong own, ulong enemy, ulong piece);
+    ulong KingAttack(ulong enemy, ulong piece);
 }

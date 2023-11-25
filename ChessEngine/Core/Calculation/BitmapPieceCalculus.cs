@@ -9,31 +9,20 @@ public class BitmapPieceCalculus : IPieceCalculus
     private const ulong AFile = 0b_00000001_00000001_00000001_00000001_00000001_00000001_00000001_00000001;
     private const ulong HFile = 0b_10000000_10000000_10000000_10000000_10000000_10000000_10000000_10000000;
 
-    public ulong PiecesAttackedByRooks(ABoard board, bool color)
+    /// <inheritdoc cref="IPieceCalculus"/>
+    public ulong PawnAttack(ulong enemy, ulong piece, bool color, ulong enPassantSquare)
     {
-        ulong piecesUnderAttack = 0;
-        ulong rank = FirstRank;
-        for (int i = 0; i < 8; i++)
-        {
-            ulong file = AFile;
-            for (int j = 0; j < 8; j++)
-            {
-                if ((board.WhiteRook & file & rank) != 0)
-                {
-                    piecesUnderAttack |= file & rank;
-                }
-                else if ((board.BlackRook & file & rank) != 0)
-                {
-                    piecesUnderAttack |= file & rank;
-                }
+        ThrowIfPawnOnLastRank(piece, color);
 
-                file <<= 8 * i;
-            }
+        ulong leftTargetSquare = color ? piece << 9 : piece >> 7;
+        ulong rightTargetSquare = color ? piece << 7 : piece >> 9;
 
-            rank <<= 8 * i;
-        }
+        ulong enPassant = GetEnPassant(enemy: enemy, piece: piece, enPassantSquare: enPassantSquare);
 
-        return piecesUnderAttack;
+        if ((piece & AFile) == piece) return (enemy & leftTargetSquare) | enPassant;
+        if ((piece & HFile) == piece) return (enemy & rightTargetSquare) | enPassant;
+
+        return (enemy & leftTargetSquare) | (enemy & rightTargetSquare) | enPassant;
     }
 
     /// <summary>
@@ -180,19 +169,105 @@ public class BitmapPieceCalculus : IPieceCalculus
         };
     }
 
-    public ulong PawnAttack(ulong enemy, ulong piece, bool color, ulong enPassantSquare)
+    /// <inheritdoc cref="IPieceCalculus"/>
+    public ulong BishopAttack(ulong enemy, ulong own, ulong piece)
     {
-        ThrowIfPawnOnLastRank(piece, color);
+        //  <<7     <<9
+        //     \   /
+        //       B
+        //     /   \ 
+        // >>9     >>7
+        return FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: HFile | EightsRank, left: 9, right: 0)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: HFile | FirstRank, left: 0, right: 7)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: AFile | FirstRank, left: 0, right: 9)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: AFile | EightsRank, left: 7, right: 0);
+    }
 
-        ulong leftTargetSquare = color ? piece << 9 : piece >> 7;
-        ulong rightTargetSquare = color ? piece << 7 : piece >> 9;
+    /// <inheritdoc cref="IPieceCalculus"/>
+    public ulong RookAttack(ulong own, ulong enemy, ulong piece)
+    {
+        return SlidingPieceFileAttack(own: own, enemy: enemy, piece: piece)
+               | SlidingPieceRankAttack(own: own, enemy: enemy, piece: piece);
+    }
 
-        ulong enPassant = GetEnPassant(enemy: enemy, piece: piece, enPassantSquare: enPassantSquare);
+    /// <inheritdoc cref="IPieceCalculus"/>
+    public ulong QueenAttack(ulong own, ulong enemy, ulong piece)
+    {
+        return RookAttack(own: own, enemy: enemy, piece: piece)
+               | BishopAttack(own: own, enemy: enemy, piece: piece);
+    }
 
-        if ((piece & AFile) == piece) return (enemy & leftTargetSquare) | enPassant;
-        if ((piece & HFile) == piece) return (enemy & rightTargetSquare) | enPassant;
+    /// TODO: Speed-up! It is only 8 MOPS now! (2 times slower then Queen!)
+    /// TODO: Check StockFish implementation or just hard-code (same as Knight).
+    /// <inheritdoc cref="IPieceCalculus"/>
+    public ulong KingAttack(ulong enemy, ulong piece)
+    {
+        ulong mask = 0;
 
-        return (enemy & leftTargetSquare) | (enemy & rightTargetSquare) | enPassant;
+        // North | -----------------
+        //  East |             -----------------
+        // South |                         ----------------
+        //  West | ----                                ----------
+        //         0. 7; 1. 8; 2. 9; 3. 1; 4.-7; 5.-8; 6.-9; 7.-1
+        int[] shifts = new[] { 7, 8, 9, 1, 7, 8, 9, 1 };
+        int[] skip = new[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        if ((piece & EightsRank) == piece)
+        {
+            skip[0] = 1;
+            skip[1] = 1;
+            skip[2] = 1;
+        }
+
+        if ((piece & HFile) == piece)
+        {
+            skip[2] = 1;
+            skip[3] = 1;
+            skip[4] = 1;
+        }
+
+        if ((piece & FirstRank) == piece)
+        {
+            skip[4] = 1;
+            skip[5] = 1;
+            skip[6] = 1;
+        }
+
+        if ((piece & AFile) == piece)
+        {
+            skip[6] = 1;
+            skip[7] = 1;
+            skip[0] = 1;
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            if (skip[i] == 0)
+            {
+                if (i <= 3) mask |= piece << shifts[i];
+                else mask |= piece >> shifts[i];
+            }
+        }
+
+        return enemy & mask;
+    }
+
+    private ulong FollowDiagonal(ulong enemy, ulong own, ulong cursor, ulong bound, byte left, byte right)
+    {
+        ulong attack = 0;
+        do
+        {
+            cursor <<= left;
+            cursor >>= right;
+            if ((cursor & own) == cursor) break;
+            if ((cursor & enemy) == cursor)
+            {
+                attack |= cursor;
+                break;
+            }
+        } while ((cursor & bound) != cursor);
+
+        return attack;
     }
 
     private void ThrowIfPawnOnLastRank(ulong piece, bool color)
@@ -212,7 +287,46 @@ public class BitmapPieceCalculus : IPieceCalculus
             : 0;
     }
 
-    public ulong SlidingPieceRankAttack(ulong own, ulong enemy, ulong piece)
+    private ulong SlidingPieceFileAttack(ulong own, ulong enemy, ulong piece)
+    {
+        if ((piece & FirstRank) == piece)
+        {
+            return FollowFile(own: own, enemy: enemy, piece: piece, bound: EightsRank, moveTop: true);
+        }
+
+        if ((piece & EightsRank) == piece)
+        {
+            return FollowFile(own: own, enemy: enemy, piece: piece, bound: FirstRank, moveTop: false);
+        }
+
+        return FollowFile(own: own, enemy: enemy, piece: piece, bound: EightsRank, moveTop: true)
+               | FollowFile(own: own, enemy: enemy, piece: piece, bound: FirstRank, moveTop: false);
+    }
+
+    private ulong FollowFile(ulong own, ulong enemy, ulong piece, ulong bound, bool moveTop)
+    {
+        ulong cursor = piece;
+        ulong attack = 0;
+
+        do
+        {
+            // Slightly (1-2 MOPS) faster than ternary.
+            if (moveTop) cursor <<= 8;
+            else cursor >>= 8;
+
+            if ((cursor & own) == cursor) break;
+            if ((cursor & enemy) == cursor)
+            {
+                attack |= cursor;
+                break;
+            }
+        } while ((cursor & bound) != cursor);
+
+        return attack;
+    }
+
+    // TODO: Unify with file attack/ bishop attack.
+    private ulong SlidingPieceRankAttack(ulong own, ulong enemy, ulong piece)
     {
         if ((piece & AFile) == piece)
         {
