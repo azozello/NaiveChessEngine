@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using ChessEngine.Core.Calculation;
-using ChessEngine.Core.State;
 using ChessEngine.Utils;
 
 namespace ChessEngine.Test.Core.Calculation;
@@ -9,13 +8,11 @@ namespace ChessEngine.Test.Core.Calculation;
 public class BitmapPieceCalculusTests
 {
     private BitmapPieceCalculus _calculus;
-    private ChessLogger _logger;
 
     [SetUp]
     public void Setup()
     {
         _calculus = new BitmapPieceCalculus();
-        _logger = new ChessLogger(Console.WriteLine);
     }
 
     [Test]
@@ -523,6 +520,83 @@ public class BitmapPieceCalculusTests
         {
             _calculus.QueenAttack(
                 board.GetWhitePieces(), board.GetBlackPieces(), board.WhiteQueen);
+        }
+
+        watch.Stop();
+        Console.WriteLine($"MOPS: {1000 / watch.ElapsedMilliseconds}");
+    }
+
+    [Test]
+    public void KingAttackTest()
+    {
+        var testCases = new List<(string, string)>
+        {
+            ("8/8/8/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+
+            ("8/8/8/8/8/8/pp6/Kp6", "8/8/8/8/8/8/pp6/1p6"),
+            ("8/8/8/8/8/8/pp6/K7", "8/8/8/8/8/8/pp6/8"),
+            ("8/8/8/8/8/8/p7/K7", "8/8/8/8/8/8/p7/8"),
+            ("8/8/8/8/8/8/1p6/Kp6", "8/8/8/8/8/8/1p6/1p6"),
+            ("8/8/8/8/8/8/8/Kp6", "8/8/8/8/8/8/8/1p6"),
+            ("8/8/8/8/8/8/1p6/K7", "8/8/8/8/8/8/1p6/8"),
+
+            ("Kp6/pp6/8/8/8/8/8/8", "1p6/pp6/8/8/8/8/8/8"),
+            ("6pK/6pp/8/8/8/8/8/8", "6p1/6pp/8/8/8/8/8/8"),
+            ("8/8/8/8/8/8/6pp/6pK", "8/8/8/8/8/8/6pp/6p1"),
+            ("pppp1pp1/pppppppp/p2p1ppp/ppp1ppp1/ppp1p1pp/p3pppp/pp1ppp2/1pp2p1K", "8/8/8/8/8/8/8/8"),
+            ("5p1K/5p2/5ppp/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+            ("5p1K/ppp2p2/1p3ppp/1pp5/2ppppp1/pppp2p1/2p3pp/K1p5", "8/8/8/8/8/8/8/8"),
+
+            ("8/8/2qnb3/2kKr3/2ppp3/8/8/8", "8/8/2qnb3/2k1r3/2ppp3/8/8/8"),
+            ("8/8/3r1n2/2n3p1/4K3/3p1p2/8/8", "8/8/8/8/8/3p1p2/8/8"),
+        };
+
+        foreach (var tc in testCases)
+        {
+            var whiteBoard = Parser.FromFen(tc.Item1);
+            var whiteAttack = Parser.FromFen(tc.Item2);
+
+            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
+
+            var whiteExpected = whiteAttack.GetBlackPieces();
+            var whiteActual = _calculus.KingAttack(whiteBoard.GetBlackPieces(), whiteBoard.WhiteKing);
+
+            var blackExpected = blackAttack.GetWhitePieces();
+            var blackActual = _calculus.KingAttack(blackBoard.GetWhitePieces(), blackBoard.BlackKing);
+
+            try
+            {
+                Assert.That(whiteActual, Is.EqualTo(whiteExpected));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"{tc.Item1} - {tc.Item2}");
+                whiteBoard.PrintState();
+                whiteAttack.PrintState();
+                throw;
+            }
+
+            try
+            {
+                Assert.That(blackActual, Is.EqualTo(blackExpected));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"{tc.Item1} - {tc.Item2}");
+                blackBoard.PrintState();
+                blackAttack.PrintState();
+                throw;
+            }
+        }
+
+        var watch = new Stopwatch();
+        var board = Parser.FromFen("p7/8/8/R7/8/8/8/p7");
+        watch.Start();
+
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            _calculus.KingAttack(board.GetBlackPieces(), board.WhiteKing);
         }
 
         watch.Stop();

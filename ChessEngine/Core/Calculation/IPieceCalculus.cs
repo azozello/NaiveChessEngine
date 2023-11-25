@@ -9,5 +9,5 @@ public interface IPieceCalculus
     ulong BishopAttack(ulong own, ulong enemy, ulong piece);
     ulong RookAttack(ulong own, ulong enemy, ulong piece);
     ulong QueenAttack(ulong own, ulong enemy, ulong piece);
-    ulong KingAttack(ulong own, ulong enemy, ulong piece);
+    ulong KingAttack(ulong enemy, ulong piece);
 }
