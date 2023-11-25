@@ -22,7 +22,6 @@ public class BitmapPieceCalculusTests
     {
         var whiteTestCases = new List<(string, string)>
         {
-            // White, full-pawns
             ("8/8/8/8/8/1p6/2p5/N7", "8/8/8/8/8/1p6/2p5/8"),
             ("8/8/8/8/p1p5/3p4/1N6/3p4", "8/8/8/8/p1p5/3p4/8/3p4"),
             ("8/8/8/1p1p4/p3p3/2N5/p3p3/1p1p4", "8/8/8/1p1p4/p3p3/8/p3p3/1p1p4"),
@@ -42,27 +41,95 @@ public class BitmapPieceCalculusTests
             ("8/8/2p1P3/8/1P1N4/5p2/2p1P3/8", "8/8/2p5/8/8/5p2/2p5/8"),
             ("pppppppp/ppp1p1pp/pp1ppp1p/ppppNppp/pp1ppp1p/ppp1p1pp/pppppppp/pppppppp", "8/8/8/8/8/8/8/8"),
             ("4p3/3ppp2/2pPpPp1/1pPpppPp/ppppNppp/1pPpppPp/2pPpPp1/3ppp2", "8/8/8/8/8/8/8/8"),
+
+            ("8/8/8/8/1p6/2p5/N7/2p5", "8/8/8/8/1p6/2p5/8/2p5"),
+            ("8/8/8/1p6/2p5/N7/2p5/1p6", "8/8/8/1p6/2p5/8/2p5/1p6"),
+            ("2p5/N7/2p5/1p6/8/8/8/8", "2p5/8/2p5/1p6/8/8/8/8"),
+            ("1p6/2p5/N7/2p5/1p6/8/8/8", "1p6/2p5/8/2p5/1p6/8/8/8"),
+
+            ("8/8/8/8/8/p1p5/3p4/1N6", "8/8/8/8/8/p1p5/3p4/8"),
+            ("8/8/8/8/8/1p1p4/p3p3/2N5", "8/8/8/8/8/1p1p4/p3p3/8"),
+            ("8/8/8/8/8/5p1p/4p3/6N1", "8/8/8/8/8/5p1p/4p3/8"),
+            ("8/8/8/8/8/4p1p1/3p3p/5N2", "8/8/8/8/8/4p1p1/3p3p/8"),
+
+            ("1N6/3p4/p1p5/8/8/8/8/8", "8/3p4/p1p5/8/8/8/8/8"),
+            ("2N5/p3p3/1p1p4/8/8/8/8/8", "8/p3p3/1p1p4/8/8/8/8/8"),
+            ("6N1/4p3/5p1p/8/8/8/8/8", "8/4p3/5p1p/8/8/8/8/8"),
+            ("5N2/3p3p/4p1p1/8/8/8/8/8", "8/3p3p/4p1p1/8/8/8/8/8"),
+
+            ("5p2/7N/5p2/6p1/8/8/8/8", "5p2/8/5p2/6p1/8/8/8/8"),
+            ("6p1/5p2/7N/5p2/6p1/8/8/8", "6p1/5p2/8/5p2/6p1/8/8/8"),
+            ("8/8/8/8/6p1/5p2/7N/5p2", "8/8/8/8/6p1/5p2/8/5p2"),
+            ("8/8/8/6p1/5p2/7N/5p2/6p1", "8/8/8/6p1/5p2/8/5p2/6p1"),
+
+            ("8/8/8/p1p5/3p4/1N6/3p4/p1p5", "8/8/8/p1p5/3p4/8/3p4/p1p5"),
+            ("8/8/8/8/1p1p4/p3p3/2N5/p3p3", "8/8/8/8/1p1p4/p3p3/8/p3p3"),
+
+            ("p1p5/3p4/1N6/3p4/p1p5/8/8/8", "p1p5/3p4/8/3p4/p1p5/8/8/8"),
+            ("p3p3/2N5/p3p3/1p1p4/8/8/8/8", "p3p3/8/p3p3/1p1p4/8/8/8/8"),
+
+            ("3p3p/5N2/3p3p/4p1p1/8/8/8/8", "3p3p/8/3p3p/4p1p1/8/8/8/8"),
+            ("5p1p/4p3/6N1/4p3/5p1p/8/8/8", "5p1p/4p3/8/4p3/5p1p/8/8/8"),
+
+            ("8/8/8/8/4p1p1/3p3p/5N2/3p3p", "8/8/8/8/4p1p1/3p3p/8/3p3p"),
+            ("8/8/8/5p1p/4p3/6N1/4p3/5p1p", "8/8/8/5p1p/4p3/8/4p3/5p1p"),
         };
 
         foreach (var tc in whiteTestCases)
         {
-            var fullBoard = Parser.FromFen(tc.Item1);
-            var underAttackBoard = Parser.FromFen(tc.Item2);
+            var whiteBoard = Parser.FromFen(tc.Item1);
+            var whiteAttack = Parser.FromFen(tc.Item2);
 
-            var expected = underAttackBoard.GetBlackPieces();
-            var actual = _calculus.KnightAttack(fullBoard.GetBlackPieces(), fullBoard.WhiteKnight, true);
+            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
 
-            try
-            {
-                Assert.That(actual, Is.EqualTo(expected));
-            }
-            catch (Exception)
-            {
-                fullBoard.PrintState();
-                underAttackBoard.PrintState();
-                throw;
-            }
+            var whiteExpected = whiteAttack.GetBlackPieces();
+            var whiteActual = _calculus.KnightAttack(whiteBoard.GetBlackPieces(), whiteBoard.WhiteKnight);
+
+            var blackExpected = blackAttack.GetWhitePieces();
+            var blackActual = _calculus.KnightAttack(blackBoard.GetWhitePieces(), blackBoard.BlackKnight);
+
+            Assert.That(whiteActual, Is.EqualTo(whiteExpected));
+            Assert.That(blackActual, Is.EqualTo(blackExpected));
         }
+
+        var watch = new Stopwatch();
+        watch.Start();
+
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            _calculus.KnightAttack(
+                0b_0000000000000000000000000000000000000000000000100000010000000000,
+                0b_0000000000000000000000000000000000000000000000000000000000000001);
+        }
+
+        watch.Stop();
+        Console.WriteLine($"MOPS: {1000 / watch.ElapsedMilliseconds}");
+    }
+
+    private string InvertFen(string fen)
+    {
+        string invertedFen = "";
+        foreach (var c in fen)
+        {
+            if (c == 'p') invertedFen += "P";
+            else if (c == 'n') invertedFen += "N";
+            else if (c == 'b') invertedFen += "B";
+            else if (c == 'r') invertedFen += "R";
+            else if (c == 'q') invertedFen += "Q";
+            else if (c == 'k') invertedFen += "K";
+
+            else if (c == 'P') invertedFen += "p";
+            else if (c == 'N') invertedFen += "n";
+            else if (c == 'B') invertedFen += "b";
+            else if (c == 'R') invertedFen += "r";
+            else if (c == 'Q') invertedFen += "q";
+            else if (c == 'K') invertedFen += "k";
+
+            else invertedFen += c;
+        }
+
+        return invertedFen;
     }
 
     [Test]
