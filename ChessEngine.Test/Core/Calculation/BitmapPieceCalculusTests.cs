@@ -31,7 +31,7 @@ public class BitmapPieceCalculusTests
             ("8/8/8/4p3/3P4/8/8/B7", "8/8/8/8/8/8/8/8"),
             ("7p/6P1/8/8/8/8/8/B7", "8/8/8/8/8/8/8/8"),
             ("8/8/8/8/8/8/8/B7", "8/8/8/8/8/8/8/8"),
-            
+
             // South-East
             ("B7/1p6/8/8/8/8/8/8", "8/1p6/8/8/8/8/8/8"),
             ("B7/8/8/3p4/8/8/8/8", "8/8/8/3p4/8/8/8/8"),
@@ -40,44 +40,62 @@ public class BitmapPieceCalculusTests
             ("B7/8/8/3P4/4p3/8/8/8", "8/8/8/8/8/8/8/8"),
             ("B7/8/8/8/8/8/6P1/7p", "8/8/8/8/8/8/8/8"),
             ("B7/8/8/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
-            
+
             // South-West
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            
+            ("7B/6p1/8/8/8/8/8/8", "8/6p1/8/8/8/8/8/8"),
+            ("7B/8/8/8/3p4/8/8/8", "8/8/8/8/3p4/8/8/8"),
+            ("7B/8/8/8/8/8/8/p7", "8/8/8/8/8/8/8/p7"),
+            ("7B/6P1/5p2/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+            ("7B/8/8/4P3/3p4/8/8/8", "8/8/8/8/8/8/8/8"),
+            ("7B/8/8/8/8/8/1P6/p7", "8/8/8/8/8/8/8/8"),
+            ("7B/8/8/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+
             // North-West
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
-            // ("", ""),
+            ("8/8/8/8/8/8/6p1/7B", "8/8/8/8/8/8/6p1/8"),
+            ("8/8/8/3p4/8/8/8/7B", "8/8/8/3p4/8/8/8/8"),
+            ("p7/8/8/8/8/8/8/7B", "p7/8/8/8/8/8/8/8"),
+            ("8/8/8/8/8/5p2/6P1/7B", "8/8/8/8/8/8/8/8"),
+            ("8/8/8/3p4/8/5P2/8/7B", "8/8/8/8/8/8/8/8"),
+            ("p7/8/8/3P4/8/8/8/7B", "8/8/8/8/8/8/8/8"),
+            ("8/8/8/8/8/8/8/7B", "8/8/8/8/8/8/8/8"),
+
+            // Combined
+            ("p7/7p/8/8/4B3/3p4/6p1/8", "p7/7p/8/8/8/3p4/6p1/8"),
+            ("p3p3/7p/8/8/B7/3p4/6p1/8", "4p3/8/8/8/8/8/8/8"),
+            ("r1bqkbnr/pppppppp/n7/8/2B1P3/8/PPPP1PPP/RN1QK1NR", "8/5p2/n7/8/8/8/8/8"),
         };
 
         foreach (var tc in testCases)
         {
-            var fullBoard = Parser.FromFen(tc.Item1);
-            var attackedBoard = Parser.FromFen(tc.Item2);
+            var whiteBoard = Parser.FromFen(tc.Item1);
+            var whiteAttack = Parser.FromFen(tc.Item2);
 
-            var actual = _calculus.BishopAttack(
-                fullBoard.GetBlackPieces(), fullBoard.GetWhitePieces(), fullBoard.WhiteBishop);
-            try
-            {
-                Assert.That(actual, Is.EqualTo(attackedBoard.GetBlackPieces()));
-            }
-            catch (Exception e)
-            {
-                fullBoard.PrintState();
-                attackedBoard.PrintState();
-                throw;
-            }
+            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
+
+            var whiteExpected = whiteAttack.GetBlackPieces();
+            var whiteActual = _calculus.BishopAttack(
+                whiteBoard.GetBlackPieces(), whiteBoard.GetWhitePieces(), whiteBoard.WhiteBishop);
+
+            var blackExpected = blackAttack.GetWhitePieces();
+            var blackActual = _calculus.BishopAttack(
+                blackBoard.GetWhitePieces(), blackBoard.GetBlackPieces(), blackBoard.BlackBishop);
+
+            Assert.That(whiteActual, Is.EqualTo(whiteExpected));
+            Assert.That(blackActual, Is.EqualTo(blackExpected));
         }
+
+        var watch = new Stopwatch();
+        var board = Parser.FromFen("p7/7p/8/8/4B3/3p4/6p1/8");
+        watch.Start();
+
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            _calculus.BishopAttack(board.GetBlackPieces(), board.GetWhitePieces(), board.WhiteBishop);
+        }
+
+        watch.Stop();
+        Console.WriteLine($"MOPS: {1000 / watch.ElapsedMilliseconds}");
     }
 
     [Test]
