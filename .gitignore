@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+ChessEngine.sln.DotSettings.user
+ChessEngine.Test/bin/
+ChessEngine.Test/obj/
+ChessEngine.Test/.DS_Store
+ChessEngine/bin/
+ChessEngine/obj/
+ChessEngine/.DS_Store
