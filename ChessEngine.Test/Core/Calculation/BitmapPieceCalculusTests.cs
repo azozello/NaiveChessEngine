@@ -17,8 +17,71 @@ public class BitmapPieceCalculusTests
         _logger = new ChessLogger(Console.WriteLine);
     }
 
+
     [Test]
-    public void TestKnightAttack()
+    public void BishopAttackTest()
+    {
+        var testCases = new List<(string, string)>
+        {
+            // North-East
+            ("8/8/8/8/8/8/1p6/B7", "8/8/8/8/8/8/1p6/8"),
+            ("8/8/8/4p3/8/8/8/B7", "8/8/8/4p3/8/8/8/8"),
+            ("7p/8/8/8/8/8/8/B7", "7p/8/8/8/8/8/8/8"),
+            ("8/8/8/8/8/2p5/1P6/B7", "8/8/8/8/8/8/8/8"),
+            ("8/8/8/4p3/3P4/8/8/B7", "8/8/8/8/8/8/8/8"),
+            ("7p/6P1/8/8/8/8/8/B7", "8/8/8/8/8/8/8/8"),
+            ("8/8/8/8/8/8/8/B7", "8/8/8/8/8/8/8/8"),
+            
+            // South-East
+            ("B7/1p6/8/8/8/8/8/8", "8/1p6/8/8/8/8/8/8"),
+            ("B7/8/8/3p4/8/8/8/8", "8/8/8/3p4/8/8/8/8"),
+            ("B7/8/8/8/8/8/8/7p", "8/8/8/8/8/8/8/7p"),
+            ("B7/1P6/2p5/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+            ("B7/8/8/3P4/4p3/8/8/8", "8/8/8/8/8/8/8/8"),
+            ("B7/8/8/8/8/8/6P1/7p", "8/8/8/8/8/8/8/8"),
+            ("B7/8/8/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+            
+            // South-West
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            
+            // North-West
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+            // ("", ""),
+        };
+
+        foreach (var tc in testCases)
+        {
+            var fullBoard = Parser.FromFen(tc.Item1);
+            var attackedBoard = Parser.FromFen(tc.Item2);
+
+            var actual = _calculus.BishopAttack(
+                fullBoard.GetBlackPieces(), fullBoard.GetWhitePieces(), fullBoard.WhiteBishop);
+            try
+            {
+                Assert.That(actual, Is.EqualTo(attackedBoard.GetBlackPieces()));
+            }
+            catch (Exception e)
+            {
+                fullBoard.PrintState();
+                attackedBoard.PrintState();
+                throw;
+            }
+        }
+    }
+
+    [Test]
+    public void KnightAttackTest()
     {
         var whiteTestCases = new List<(string, string)>
         {

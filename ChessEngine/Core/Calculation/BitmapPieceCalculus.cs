@@ -36,6 +36,37 @@ public class BitmapPieceCalculus : IPieceCalculus
         return piecesUnderAttack;
     }
 
+    public ulong BishopAttack(ulong enemy, ulong own, ulong piece)
+    {
+        //  <<7     <<9
+        //     \   /
+        //       B
+        //     /  \ 
+        // >>9     >>7
+        return FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: HFile | EightsRank, left: 9, right: 0)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: HFile | EightsRank, left: 0, right: 7)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: HFile | EightsRank, left: 0, right: 9)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: HFile | EightsRank, left: 7, right: 0);
+    }
+
+    private ulong FollowDiagonal(ulong enemy, ulong own, ulong cursor, ulong bound, byte left, byte right)
+    {
+        ulong attack = 0;
+        do
+        {
+            cursor <<= left;
+            cursor >>= right;
+            if ((cursor & own) == cursor) break;
+            if ((cursor & enemy) == cursor)
+            {
+                attack |= cursor;
+                break;
+            }
+        } while ((cursor & bound) != cursor);
+
+        return attack;
+    }
+
     /// <summary>
     /// Knight in chess has complicated attack pattern.
     /// Algorithmic implementation would be both convoluted and slow.
