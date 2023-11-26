@@ -5,14 +5,14 @@ using ChessEngine.Utils;
 namespace ChessEngine.Test.Core.Calculation;
 
 // TODO: Adopt FEN based testing for all pieces.
-public class BitmapPieceCalculusTests
+public class BitmapAttackCalculusTests
 {
-    private BitmapPieceCalculus _calculus;
+    private BitmapAttackCalculator _calculus;
 
     [SetUp]
     public void Setup()
     {
-        _calculus = new BitmapPieceCalculus();
+        _calculus = new BitmapAttackCalculator();
     }
 
     [Test]

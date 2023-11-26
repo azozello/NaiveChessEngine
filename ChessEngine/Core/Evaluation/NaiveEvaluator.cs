@@ -5,9 +5,9 @@ namespace ChessEngine.Core.Evaluation;
 
 public class NaiveEvaluator : IEvaluator
 {
-    private readonly IPieceCalculus _calculus;
+    private readonly IAttackCalculator _calculus;
 
-    public NaiveEvaluator(IPieceCalculus calculus)
+    public NaiveEvaluator(IAttackCalculator calculus)
     {
         _calculus = calculus;
     }
