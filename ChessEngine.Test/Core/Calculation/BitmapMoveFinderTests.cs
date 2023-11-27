@@ -15,99 +15,6 @@ public class BitmapMoveFinderTests
     }
 
     [Test]
-    public void TestTest()
-    {
-        var moves = new List<(string, string)>
-        {
-            ("8/8/8/8/8/8/8/K7", "8/8/8/8/8/8/QQ6/KQ6"),
-            ("8/8/8/8/8/8/8/1K6", "8/8/8/8/8/8/QQQ5/QKQ5"),
-            ("8/8/8/8/8/8/8/2K5", "8/8/8/8/8/8/1QQQ4/1QKQ4"),
-            ("8/8/8/8/8/8/8/3K4", "8/8/8/8/8/8/2QQQ3/2QKQ3"),
-            ("8/8/8/8/8/8/8/4K3", "8/8/8/8/8/8/3QQQ2/3QKQ2"),
-            ("8/8/8/8/8/8/8/5K2", "8/8/8/8/8/8/4QQQ1/4QKQ1"),
-            ("8/8/8/8/8/8/8/6K1", "8/8/8/8/8/8/5QQQ/5QKQ"),
-            ("8/8/8/8/8/8/8/7K", "8/8/8/8/8/8/6QQ/6QK"),
-
-            ("8/8/8/8/8/8/K7/8", "8/8/8/8/8/QQ6/KQ6/QQ6"),
-            ("8/8/8/8/8/8/1K6/8", "8/8/8/8/8/QQQ5/QKQ5/QQQ5"),
-            ("8/8/8/8/8/8/2K5/8", "8/8/8/8/8/1QQQ4/1QKQ4/1QQQ4"),
-            ("8/8/8/8/8/8/3K4/8", "8/8/8/8/8/2QQQ3/2QKQ3/2QQQ3"),
-            ("8/8/8/8/8/8/4K3/8", "8/8/8/8/8/3QQQ2/3QKQ2/3QQQ2"),
-            ("8/8/8/8/8/8/5K2/8", "8/8/8/8/8/4QQQ1/4QKQ1/4QQQ1"),
-            ("8/8/8/8/8/8/6K1/8", "8/8/8/8/8/5QQQ/5QKQ/5QQQ"),
-            ("8/8/8/8/8/8/7K/8", "8/8/8/8/8/6QQ/6QK/6QQ"),
-
-            ("8/8/8/8/8/K7/8/8", "8/8/8/8/QQ6/KQ6/QQ6/8"),
-            ("8/8/8/8/8/1K6/8/8", "8/8/8/8/QQQ5/QKQ5/QQQ5/8"),
-            ("8/8/8/8/8/2K5/8/8", "8/8/8/8/1QQQ4/1QKQ4/1QQQ4/8"),
-            ("8/8/8/8/8/3K4/8/8", "8/8/8/8/2QQQ3/2QKQ3/2QQQ3/8"),
-            ("8/8/8/8/8/4K3/8/8", "8/8/8/8/3QQQ2/3QKQ2/3QQQ2/8"),
-            ("8/8/8/8/8/5K2/8/8", "8/8/8/8/4QQQ1/4QKQ1/4QQQ1/8"),
-            ("8/8/8/8/8/6K1/8/8", "8/8/8/8/5QQQ/5QKQ/5QQQ/8"),
-            ("8/8/8/8/8/7K/8/8", "8/8/8/8/6QQ/6QK/6QQ/8"),
-
-            ("8/8/8/8/K7/8/8/8", "8/8/8/QQ6/KQ6/QQ6/8/8"),
-            ("8/8/8/8/1K6/8/8/8", "8/8/8/QQQ5/QKQ5/QQQ5/8/8"),
-            ("8/8/8/8/2K5/8/8/8", "8/8/8/1QQQ4/1QKQ4/1QQQ4/8/8"),
-            ("8/8/8/8/3K4/8/8/8", "8/8/8/2QQQ3/2QKQ3/2QQQ3/8/8"),
-            ("8/8/8/8/4K3/8/8/8", "8/8/8/3QQQ2/3QKQ2/3QQQ2/8/8"),
-            ("8/8/8/8/5K2/8/8/8", "8/8/8/4QQQ1/4QKQ1/4QQQ1/8/8"),
-            ("8/8/8/8/6K1/8/8/8", "8/8/8/5QQQ/5QKQ/5QQQ/8/8"),
-            ("8/8/8/8/7K/8/8/8", "8/8/8/6QQ/6QK/6QQ/8/8"),
-
-            ("8/8/8/K7/8/8/8/8", "8/8/QQ6/KQ6/QQ6/8/8/8"),
-            ("8/8/8/1K6/8/8/8/8", "8/8/QQQ5/QKQ5/QQQ5/8/8/8"),
-            ("8/8/8/2K5/8/8/8/8", "8/8/1QQQ4/1QKQ4/1QQQ4/8/8/8"),
-            ("8/8/8/3K4/8/8/8/8", "8/8/2QQQ3/2QKQ3/2QQQ3/8/8/8"),
-            ("8/8/8/4K3/8/8/8/8", "8/8/3QQQ2/3QKQ2/3QQQ2/8/8/8"),
-            ("8/8/8/5K2/8/8/8/8", "8/8/4QQQ1/4QKQ1/4QQQ1/8/8/8"),
-            ("8/8/8/6K1/8/8/8/8", "8/8/5QQQ/5QKQ/5QQQ/8/8/8"),
-            ("8/8/8/7K/8/8/8/8", "8/8/6QQ/6QK/6QQ/8/8/8"),
-
-            ("8/8/K7/8/8/8/8/8", "8/QQ6/KQ6/QQ6/8/8/8/8"),
-            ("8/8/1K6/8/8/8/8/8", "8/QQQ5/QKQ5/QQQ5/8/8/8/8"),
-            ("8/8/2K5/8/8/8/8/8", "8/1QQQ4/1QKQ4/1QQQ4/8/8/8/8"),
-            ("8/8/3K4/8/8/8/8/8", "8/2QQQ3/2QKQ3/2QQQ3/8/8/8/8"),
-            ("8/8/4K3/8/8/8/8/8", "8/3QQQ2/3QKQ2/3QQQ2/8/8/8/8"),
-            ("8/8/5K2/8/8/8/8/8", "8/4QQQ1/4QKQ1/4QQQ1/8/8/8/8"),
-            ("8/8/6K1/8/8/8/8/8", "8/5QQQ/5QKQ/5QQQ/8/8/8/8"),
-            ("8/8/7K/8/8/8/8/8", "8/6QQ/6QK/6QQ/8/8/8/8"),
-
-            ("8/K7/8/8/8/8/8/8", "QQ6/KQ6/QQ6/8/8/8/8/8"),
-            ("8/1K6/8/8/8/8/8/8", "QQQ5/QKQ5/QQQ5/8/8/8/8/8"),
-            ("8/2K5/8/8/8/8/8/8", "1QQQ4/1QKQ4/1QQQ4/8/8/8/8/8"),
-            ("8/3K4/8/8/8/8/8/8", "2QQQ3/2QKQ3/2QQQ3/8/8/8/8/8"),
-            ("8/4K3/8/8/8/8/8/8", "3QQQ2/3QKQ2/3QQQ2/8/8/8/8/8"),
-            ("8/5K2/8/8/8/8/8/8", "4QQQ1/4QKQ1/4QQQ1/8/8/8/8/8"),
-            ("8/6K1/8/8/8/8/8/8", "5QQQ/5QKQ/5QQQ/8/8/8/8/8"),
-            ("8/7K/8/8/8/8/8/8", "6QQ/6QK/6QQ/8/8/8/8/8"),
-
-            ("K7/8/8/8/8/8/8/8", "KQ6/QQ6/8/8/8/8/8/8"),
-            ("1K6/8/8/8/8/8/8/8", "QKQ5/QQQ5/8/8/8/8/8/8"),
-            ("2K5/8/8/8/8/8/8/8", "1QKQ4/1QQQ4/8/8/8/8/8/8"),
-            ("3K4/8/8/8/8/8/8/8", "2QKQ3/2QQQ3/8/8/8/8/8/8"),
-            ("4K3/8/8/8/8/8/8/8", "3QKQ2/3QQQ2/8/8/8/8/8/8"),
-            ("5K2/8/8/8/8/8/8/8", "4QKQ1/4QQQ1/8/8/8/8/8/8"),
-            ("6K1/8/8/8/8/8/8/8", "5QKQ/5QQQ/8/8/8/8/8/8"),
-            ("7K/8/8/8/8/8/8/8", "6QK/6QQ/8/8/8/8/8/8"),
-        };
-
-        foreach (var m in moves)
-        {
-            var position = Parser.FromFen(m.Item1);
-            var possibleMoves = Parser.FromFen(m.Item2);
-
-            var bitmaps = new List<string>();
-
-            var logger = new ChessLogger(bitmaps.Add);
-            logger.LogBitmap(position.WhiteKing);
-            logger.LogBitmap(possibleMoves.WhiteQueen);
-
-            Console.WriteLine($"0b_{bitmaps[0]} => 0b_{bitmaps[1]},");
-        }
-    }
-
-    [Test]
     public void PawnMoveTest()
     {
         var whiteTestCases = new List<(string, string, bool)>
@@ -389,6 +296,70 @@ public class BitmapMoveFinderTests
     [Test]
     public void QueenMoveTest()
     {
+        var testCases = new List<(string, string)>
+        {
+            ("8/8/8/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+            
+            ("8/8/8/8/8/8/8/Q7", "Q6Q/Q5Q1/Q4Q2/Q3Q3/Q2Q4/Q1Q5/QQ6/1QQQQQQQ"),
+            ("8/8/8/Q7/8/8/8/8", "Q2Q4/Q1Q5/QQ6/1QQQQQQQ/QQ6/Q1Q5/Q2Q4/Q3Q3"),
+            ("Q7/8/8/8/8/8/8/8", "1QQQQQQQ/QQ6/Q1Q5/Q2Q4/Q3Q3/Q4Q2/Q5Q1/Q6Q"),
+            ("4Q3/8/8/8/8/8/8/8", "QQQQ1QQQ/3QQQ2/2Q1Q1Q1/1Q2Q2Q/Q3Q3/4Q3/4Q3/4Q3"),
+            ("7Q/8/8/8/8/8/8/8", "QQQQQQQ1/6QQ/5Q1Q/4Q2Q/3Q3Q/2Q4Q/1Q5Q/Q6Q"),
+            ("8/8/8/7Q/8/8/8/8", "4Q2Q/5Q1Q/6QQ/QQQQQQQ1/6QQ/5Q1Q/4Q2Q/3Q3Q"),
+            ("8/8/8/8/8/8/8/7Q", "Q6Q/1Q5Q/2Q4Q/3Q3Q/4Q2Q/5Q1Q/6QQ/QQQQQQQ1"),
+            
+            ("P7/3p1P2/8/2pQ2p1/8/8/6P1/3P4", "8/1Q6/2QQQ3/4QQ2/2QQQ3/1Q1Q1Q2/Q2Q4/8"),
+        };
+
+        foreach (var tc in testCases)
+        {
+            var whiteState = Parser.FromFen(tc.Item1);
+            var whiteMoves = Parser.FromFen(tc.Item2);
+
+            var blackState = Parser.FromFen(CommonFunctions.InvertFen(tc.Item1));
+            var blackMoves = Parser.FromFen(CommonFunctions.InvertFen(tc.Item2));
+
+            var whiteActual = _calculus.QueenMoves(
+                whiteState.GetWhitePieces(), whiteState.GetBlackPieces(), whiteState.WhiteQueen);
+
+            var blackActual = _calculus.QueenMoves(
+                blackState.GetBlackPieces(), blackState.GetWhitePieces(), blackState.BlackQueen);
+
+            try
+            {
+                Assert.That(whiteActual, Is.EqualTo(whiteMoves.GetWhitePieces()));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"{tc.Item1} - {tc.Item2}");
+                whiteState.PrintState();
+                whiteMoves.PrintState();
+                throw;
+            }
+
+            try
+            {
+                Assert.That(blackActual, Is.EqualTo(blackMoves.GetBlackPieces()));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"{CommonFunctions.InvertFen(tc.Item1)} - {CommonFunctions.InvertFen(tc.Item2)}");
+                whiteState.PrintState();
+                whiteMoves.PrintState();
+                throw;
+            }
+        }
+
+        var watch = new Stopwatch();
+        watch.Start();
+
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            _calculus.QueenMoves(1, 0, 1);
+        }
+
+        watch.Stop();
+        Console.WriteLine($"MOPS: {1000 / watch.ElapsedMilliseconds}");
     }
 
     [Test]
