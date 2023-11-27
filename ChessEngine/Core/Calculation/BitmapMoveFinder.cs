@@ -53,6 +53,17 @@ public class BitmapMoveFinder : IMoveFinder
                | FollowRank(own, enemy, piece, Constants.AFile, false);
     }
 
+    public ulong QueenMoves(ulong own, ulong enemy, ulong piece)
+    {
+        return RookMoves(own, enemy, piece) | BishopMoves(own, enemy, piece);
+    }
+
+    public ulong KingMoves(ulong own, ulong enemy, ulong piece)
+    {
+        ulong moves = Constants.GetKingMoves(piece);
+        return (moves & (own | enemy)) ^ moves;
+    }
+
     private ulong FollowFile(ulong own, ulong enemy, ulong cursor, ulong bound, bool moveTop)
     {
         ulong moves = 0;
@@ -85,16 +96,6 @@ public class BitmapMoveFinder : IMoveFinder
         }
 
         return moves;
-    }
-
-    public ulong QueenMoves(ulong own, ulong enemy, ulong piece)
-    {
-        throw new NotImplementedException();
-    }
-
-    public ulong KingMoves(ulong own, ulong enemy, ulong piece)
-    {
-        throw new NotImplementedException();
     }
 
     private ulong FollowDiagonal(ulong enemy, ulong own, ulong cursor, ulong bound, byte left, byte right)
