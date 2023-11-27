@@ -123,7 +123,7 @@ public class BitmapAttackCalculator : IAttackCalculator
     private ulong FollowDiagonal(ulong enemy, ulong own, ulong cursor, ulong bound, byte left, byte right)
     {
         ulong attack = 0;
-        do
+        while ((cursor & bound) != cursor)
         {
             cursor <<= left;
             cursor >>= right;
@@ -133,7 +133,7 @@ public class BitmapAttackCalculator : IAttackCalculator
                 attack |= cursor;
                 break;
             }
-        } while ((cursor & bound) != cursor);
+        }
 
         return attack;
     }

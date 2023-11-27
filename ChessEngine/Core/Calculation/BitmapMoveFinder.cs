@@ -24,7 +24,19 @@ public class BitmapMoveFinder : IMoveFinder
 
     public ulong BishopMoves(ulong own, ulong enemy, ulong piece)
     {
-        throw new NotImplementedException();
+        //  <<7     <<9
+        //     \   /
+        //       B
+        //     /   \ 
+        // >>9     >>7
+        return FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: Constants.HFile | Constants.Rank8,
+                   left: 9, right: 0)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: Constants.HFile | Constants.Rank1,
+                   left: 0, right: 7)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: Constants.AFile | Constants.Rank1,
+                   left: 0, right: 9)
+               | FollowDiagonal(enemy: enemy, own: own, cursor: piece, bound: Constants.AFile | Constants.Rank8,
+                   left: 7, right: 0);
     }
 
     public ulong KnightMoves(ulong own, ulong enemy, ulong piece)
@@ -46,5 +58,19 @@ public class BitmapMoveFinder : IMoveFinder
     public ulong KingMoves(ulong own, ulong enemy, ulong piece)
     {
         throw new NotImplementedException();
+    }
+
+    private ulong FollowDiagonal(ulong enemy, ulong own, ulong cursor, ulong bound, byte left, byte right)
+    {
+        ulong moves = 0;
+        while ((cursor & bound) != cursor)
+        {
+            cursor <<= left;
+            cursor >>= right;
+            if ((cursor & (own | enemy)) == cursor) break;
+            moves |= cursor;
+        }
+
+        return moves;
     }
 }
