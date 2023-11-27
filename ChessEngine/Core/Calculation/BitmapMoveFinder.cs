@@ -22,6 +22,12 @@ public class BitmapMoveFinder : IMoveFinder
         return moves;
     }
 
+    public ulong KnightMoves(ulong own, ulong enemy, ulong piece)
+    {
+        ulong moves = Constants.GetKnightMoves(piece);
+        return (moves & (own | enemy)) ^ moves;
+    }
+
     public ulong BishopMoves(ulong own, ulong enemy, ulong piece)
     {
         //  <<7     <<9
@@ -39,15 +45,46 @@ public class BitmapMoveFinder : IMoveFinder
                    left: 7, right: 0);
     }
 
-    public ulong KnightMoves(ulong own, ulong enemy, ulong piece)
-    {
-        ulong moves = Constants.GetKnightMoves(piece);
-        return (moves & (own | enemy)) ^ moves;
-    }
-
     public ulong RookMoves(ulong own, ulong enemy, ulong piece)
     {
-        throw new NotImplementedException();
+        return FollowFile(own, enemy, piece, Constants.Rank8, true)
+               | FollowFile(own, enemy, piece, Constants.Rank1, false)
+               | FollowRank(own, enemy, piece, Constants.HFile, true)
+               | FollowRank(own, enemy, piece, Constants.AFile, false);
+    }
+
+    private ulong FollowFile(ulong own, ulong enemy, ulong cursor, ulong bound, bool moveTop)
+    {
+        ulong moves = 0;
+
+        while ((cursor & bound) != cursor)
+        {
+            // Slightly (1-2 MOPS) faster than ternary.
+            if (moveTop) cursor <<= 8;
+            else cursor >>= 8;
+
+            if ((cursor & (own | enemy)) == cursor) break;
+            moves |= cursor;
+        }
+
+        return moves;
+    }
+
+    private ulong FollowRank(ulong own, ulong enemy, ulong cursor, ulong bound, bool moveRight)
+    {
+        ulong moves = 0;
+
+        while ((cursor & bound) != cursor)
+        {
+            // Slightly (1-2 MOPS) faster than ternary.
+            if (moveRight) cursor <<= 1;
+            else cursor >>= 1;
+
+            if ((cursor & (own | enemy)) == cursor) break;
+            moves |= cursor;
+        }
+
+        return moves;
     }
 
     public ulong QueenMoves(ulong own, ulong enemy, ulong piece)

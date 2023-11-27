@@ -223,4 +223,78 @@ public class BitmapMoveFinderTests
         watch.Stop();
         Console.WriteLine($"MOPS: {1000 / watch.ElapsedMilliseconds}");
     }
+
+    [Test]
+    public void RookMovesTest()
+    {
+        var testCases = new List<(string, string)>
+        {
+            ("8/8/8/8/8/8/8/8", "8/8/8/8/8/8/8/8"),
+            ("8/8/8/8/8/8/8/R7", "R7/R7/R7/R7/R7/R7/R7/1RRRRRRR"),
+            ("R7/8/8/8/8/8/8/8", "1RRRRRRR/R7/R7/R7/R7/R7/R7/R7"),
+            ("7R/8/8/8/8/8/8/8", "RRRRRRR1/7R/7R/7R/7R/7R/7R/7R"),
+            ("8/8/8/8/8/8/8/7R", "7R/7R/7R/7R/7R/7R/7R/RRRRRRR1"),
+            ("8/8/8/8/8/8/8/3R4", "3R4/3R4/3R4/3R4/3R4/3R4/3R4/RRR1RRRR"),
+            ("8/8/8/R7/8/8/8/8", "R7/R7/R7/1RRRRRRR/R7/R7/R7/R7"),
+            ("5R2/8/8/8/8/8/8/8", "RRRRR1RR/5R2/5R2/5R2/5R2/5R2/5R2/5R2"),
+            ("8/8/8/8/8/8/7R/8", "7R/7R/7R/7R/7R/7R/RRRRRRR1/7R"),
+            ("8/8/8/3R4/8/8/8/8", "3R4/3R4/3R4/RRR1RRRR/3R4/3R4/3R4/3R4"),
+            ("PPP1PPPP/PPP1PPPP/PPP1PPPP/3R4/PPP1PPPP/PPP1PPPP/PPP1PPPP/PPP1PPPP",
+                "3R4/3R4/3R4/RRR1RRRR/3R4/3R4/3R4/3R4"),
+            ("ppp1pppp/ppp1pppp/ppp1pppp/3R4/ppp1pppp/ppp1pppp/ppp1pppp/ppp1pppp",
+                "3R4/3R4/3R4/RRR1RRRR/3R4/3R4/3R4/3R4"),
+            ("8/3p4/8/p2R1p2/3p4/8/8/8", "8/8/3R4/1RR1R3/8/8/8/8"),
+            ("8/3P4/8/P2R1P2/3P4/8/8/8", "8/8/3R4/1RR1R3/8/8/8/8"),
+        };
+
+        foreach (var tc in testCases)
+        {
+            var whiteState = Parser.FromFen(tc.Item1);
+            var whiteMoves = Parser.FromFen(tc.Item2);
+
+            var blackState = Parser.FromFen(CommonFunctions.InvertFen(tc.Item1));
+            var blackMoves = Parser.FromFen(CommonFunctions.InvertFen(tc.Item2));
+
+            var whiteActual = _calculus.RookMoves(
+                whiteState.GetWhitePieces(), whiteState.GetBlackPieces(), whiteState.WhiteRook);
+
+            var blackActual = _calculus.RookMoves(
+                blackState.GetBlackPieces(), blackState.GetWhitePieces(), blackState.BlackRook);
+
+            try
+            {
+                Assert.That(whiteActual, Is.EqualTo(whiteMoves.GetWhitePieces()));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"{tc.Item1} - {tc.Item2}");
+                whiteState.PrintState();
+                whiteMoves.PrintState();
+                throw;
+            }
+
+            try
+            {
+                Assert.That(blackActual, Is.EqualTo(blackMoves.GetBlackPieces()));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"{CommonFunctions.InvertFen(tc.Item1)} - {CommonFunctions.InvertFen(tc.Item2)}");
+                whiteState.PrintState();
+                whiteMoves.PrintState();
+                throw;
+            }
+        }
+
+        var watch = new Stopwatch();
+        watch.Start();
+
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            _calculus.RookMoves(1, 0, 1);
+        }
+
+        watch.Stop();
+        Console.WriteLine($"MOPS: {1000 / watch.ElapsedMilliseconds}");
+    }
 }
