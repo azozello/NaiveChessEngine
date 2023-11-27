@@ -5,14 +5,14 @@ using ChessEngine.Utils;
 namespace ChessEngine.Test.Core.Calculation;
 
 // TODO: Adopt FEN based testing for all pieces.
-public class BitmapPieceCalculusTests
+public class BitmapAttackCalculusTests
 {
-    private BitmapPieceCalculus _calculus;
+    private BitmapAttackCalculator _calculus;
 
     [SetUp]
     public void Setup()
     {
-        _calculus = new BitmapPieceCalculus();
+        _calculus = new BitmapAttackCalculator();
     }
 
     [Test]
@@ -226,8 +226,8 @@ public class BitmapPieceCalculusTests
             var whiteBoard = Parser.FromFen(tc.Item1);
             var whiteAttack = Parser.FromFen(tc.Item2);
 
-            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
-            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
+            var blackBoard = Parser.FromFen(CommonFunctions.InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(CommonFunctions.InvertFen(tc.Item2));
 
             var whiteExpected = whiteAttack.GetBlackPieces();
             var whiteActual = _calculus.KnightAttack(whiteBoard.GetBlackPieces(), whiteBoard.WhiteKnight);
@@ -306,8 +306,8 @@ public class BitmapPieceCalculusTests
             var whiteBoard = Parser.FromFen(tc.Item1);
             var whiteAttack = Parser.FromFen(tc.Item2);
 
-            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
-            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
+            var blackBoard = Parser.FromFen(CommonFunctions.InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(CommonFunctions.InvertFen(tc.Item2));
 
             var whiteExpected = whiteAttack.GetBlackPieces();
             var whiteActual = _calculus.BishopAttack(
@@ -402,8 +402,8 @@ public class BitmapPieceCalculusTests
             var whiteBoard = Parser.FromFen(tc.Item1);
             var whiteAttack = Parser.FromFen(tc.Item2);
 
-            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
-            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
+            var blackBoard = Parser.FromFen(CommonFunctions.InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(CommonFunctions.InvertFen(tc.Item2));
 
             var whiteExpected = whiteAttack.GetBlackPieces();
             var whiteActual = _calculus.RookAttack(
@@ -476,8 +476,8 @@ public class BitmapPieceCalculusTests
             var whiteBoard = Parser.FromFen(tc.Item1);
             var whiteAttack = Parser.FromFen(tc.Item2);
 
-            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
-            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
+            var blackBoard = Parser.FromFen(CommonFunctions.InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(CommonFunctions.InvertFen(tc.Item2));
 
             var whiteExpected = whiteAttack.GetBlackPieces();
             var whiteActual = _calculus.QueenAttack(
@@ -556,8 +556,8 @@ public class BitmapPieceCalculusTests
             var whiteBoard = Parser.FromFen(tc.Item1);
             var whiteAttack = Parser.FromFen(tc.Item2);
 
-            var blackBoard = Parser.FromFen(InvertFen(tc.Item1));
-            var blackAttack = Parser.FromFen(InvertFen(tc.Item2));
+            var blackBoard = Parser.FromFen(CommonFunctions.InvertFen(tc.Item1));
+            var blackAttack = Parser.FromFen(CommonFunctions.InvertFen(tc.Item2));
 
             var whiteExpected = whiteAttack.GetBlackPieces();
             var whiteActual = _calculus.KingAttack(whiteBoard.GetBlackPieces(), whiteBoard.WhiteKing);
@@ -601,30 +601,5 @@ public class BitmapPieceCalculusTests
 
         watch.Stop();
         Console.WriteLine($"MOPS: {1000 / watch.ElapsedMilliseconds}");
-    }
-
-    private string InvertFen(string fen)
-    {
-        string invertedFen = "";
-        foreach (var c in fen)
-        {
-            if (c == 'p') invertedFen += "P";
-            else if (c == 'n') invertedFen += "N";
-            else if (c == 'b') invertedFen += "B";
-            else if (c == 'r') invertedFen += "R";
-            else if (c == 'q') invertedFen += "Q";
-            else if (c == 'k') invertedFen += "K";
-
-            else if (c == 'P') invertedFen += "p";
-            else if (c == 'N') invertedFen += "n";
-            else if (c == 'B') invertedFen += "b";
-            else if (c == 'R') invertedFen += "r";
-            else if (c == 'Q') invertedFen += "q";
-            else if (c == 'K') invertedFen += "k";
-
-            else invertedFen += c;
-        }
-
-        return invertedFen;
     }
 }
