@@ -29,7 +29,8 @@ public class BitmapMoveFinder : IMoveFinder
 
     public ulong KnightMoves(ulong own, ulong enemy, ulong piece)
     {
-        throw new NotImplementedException();
+        ulong moves = Constants.GetKnightMoves(piece);
+        return (moves & (own | enemy)) ^ moves;
     }
 
     public ulong RookMoves(ulong own, ulong enemy, ulong piece)
