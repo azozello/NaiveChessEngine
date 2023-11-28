@@ -1,20 +1,38 @@
-﻿using ChessEngine.Core.State;
+﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
+using ChessEngine.Core.Calculation;
 
-var board = new Board(
-    whitePawn: 0b_00000000_00000000_00000000_00000000_00000000_00000000_11111111_00000000,
-    whiteKnight: 0b_00000000_00000000_00000000_00000000_00000000_00000000_00000000_01000010,
-    whiteBishop: 0b_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00100100,
-    whiteRook: 0b_00000000_00000000_00000000_00000000_00000000_00000000_00000000_10000001,
-    whiteQueen: 0b_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00001000,
-    whiteKing: 0b_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00010000,
-    blackPawn: 0b_00000000_11111111_00000000_00000000_00000000_00000000_00000000_00000000,
-    blackKnight: 0b_01000010_00000000_00000000_00000000_00000000_00000000_00000000_00000000,
-    blackBishop: 0b_00100100_00000000_00000000_00000000_00000000_00000000_00000000_00000000,
-    blackRook: 0b_10000001_00000000_00000000_00000000_00000000_00000000_00000000_00000000,
-    blackQueen: 0b_00001000_00000000_00000000_00000000_00000000_00000000_00000000_00000000,
-    blackKing: 0b_00010000_00000000_00000000_00000000_00000000_00000000_00000000_00000000
-);
-board.PrintState();
-board.MakePawnMove(true, true, PieceRank.Two, PieceFile.E);
-Console.WriteLine();
-board.PrintState();
+public class Program
+{
+    private readonly ulong[][] _cases = new ulong[1_000_000][];
+    private readonly BitmapMoveFinder _calculus = new();
+
+    static void Main(string[] args)
+    {
+        var summary = BenchmarkRunner.Run<Program>();
+    }
+
+    [GlobalSetup]
+    public void SetUp()
+    {
+        var random = new Random();
+
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            var own = (ulong)random.NextInt64();
+            var enemy = (ulong)random.NextInt64();
+            var piece = (ulong)random.NextInt64();
+
+            _cases[i] = new[] { own, enemy, piece };
+        }
+    }
+
+    [Benchmark]
+    public void Benchmark()
+    {
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            _calculus.RookMoves(_cases[i][0], _cases[i][1], _cases[i][2]);
+        }
+    }
+}

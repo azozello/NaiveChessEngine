@@ -1,0 +1,133 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 1 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet  restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in /Users/denyspanov/Projects/chess/NaiveChessEngine/ChessEngine/bin/Release/net7.0/64bd35f8-57d0-4aa8-b108-add0e4adc9e9
+// command took 0.58 sec and exited with 0
+// start dotnet  build -c Release --no-restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in /Users/denyspanov/Projects/chess/NaiveChessEngine/ChessEngine/bin/Release/net7.0/64bd35f8-57d0-4aa8-b108-add0e4adc9e9
+// command took 1.42 sec and exited with 0
+// ***** Done, took 00:00:02 (2.05 sec)   *****
+// Found 1 benchmarks:
+//   Program.Benchmark: DefaultJob
+
+// **************************
+// Benchmark: Program.Benchmark: DefaultJob
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet 64bd35f8-57d0-4aa8-b108-add0e4adc9e9.dll --anonymousPipes 103 104 --benchmarkName Program.Benchmark --job Default --benchmarkId 0 in /Users/denyspanov/Projects/chess/NaiveChessEngine/ChessEngine/bin/Release/net7.0/64bd35f8-57d0-4aa8-b108-add0e4adc9e9/bin/Release/net7.0
+// Failed to set up high priority (Permission denied). In order to run benchmarks with high priority, make sure you have the right permissions.
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.13.10
+// Runtime=.NET 7.0.5 (7.0.523.17405), Arm64 RyuJIT AdvSIMD
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AdvSIMD,AES,CRC32,DP,RDM,SHA1,SHA256 VectorSize=128
+// Job: DefaultJob
+
+OverheadJitting  1: 1 op, 121875.00 ns, 121.8750 us/op
+WorkloadJitting  1: 1 op, 171619208.00 ns, 171.6192 ms/op
+
+WorkloadPilot    1: 2 op, 134960625.00 ns, 67.4803 ms/op
+WorkloadPilot    2: 3 op, 203587250.00 ns, 67.8624 ms/op
+WorkloadPilot    3: 4 op, 271286875.00 ns, 67.8217 ms/op
+WorkloadPilot    4: 5 op, 338841250.00 ns, 67.7682 ms/op
+WorkloadPilot    5: 6 op, 407191917.00 ns, 67.8653 ms/op
+WorkloadPilot    6: 7 op, 475538666.00 ns, 67.9341 ms/op
+WorkloadPilot    7: 8 op, 541807375.00 ns, 67.7259 ms/op
+
+WorkloadWarmup   1: 8 op, 541293542.00 ns, 67.6617 ms/op
+WorkloadWarmup   2: 8 op, 538548250.00 ns, 67.3185 ms/op
+WorkloadWarmup   3: 8 op, 540122250.00 ns, 67.5153 ms/op
+WorkloadWarmup   4: 8 op, 539203208.00 ns, 67.4004 ms/op
+WorkloadWarmup   5: 8 op, 543649834.00 ns, 67.9562 ms/op
+WorkloadWarmup   6: 8 op, 542702375.00 ns, 67.8378 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 8 op, 541926458.00 ns, 67.7408 ms/op
+WorkloadActual   2: 8 op, 541228708.00 ns, 67.6536 ms/op
+WorkloadActual   3: 8 op, 538636500.00 ns, 67.3296 ms/op
+WorkloadActual   4: 8 op, 544344250.00 ns, 68.0430 ms/op
+WorkloadActual   5: 8 op, 538680292.00 ns, 67.3350 ms/op
+WorkloadActual   6: 8 op, 547116583.00 ns, 68.3896 ms/op
+WorkloadActual   7: 8 op, 540026125.00 ns, 67.5033 ms/op
+WorkloadActual   8: 8 op, 546788791.00 ns, 68.3486 ms/op
+WorkloadActual   9: 8 op, 541569167.00 ns, 67.6961 ms/op
+WorkloadActual  10: 8 op, 542417625.00 ns, 67.8022 ms/op
+WorkloadActual  11: 8 op, 542841833.00 ns, 67.8552 ms/op
+WorkloadActual  12: 8 op, 539005792.00 ns, 67.3757 ms/op
+WorkloadActual  13: 8 op, 543847375.00 ns, 67.9809 ms/op
+WorkloadActual  14: 8 op, 541485834.00 ns, 67.6857 ms/op
+WorkloadActual  15: 8 op, 540239833.00 ns, 67.5300 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 8 op, 541926458.00 ns, 67.7408 ms/op
+WorkloadResult   2: 8 op, 541228708.00 ns, 67.6536 ms/op
+WorkloadResult   3: 8 op, 538636500.00 ns, 67.3296 ms/op
+WorkloadResult   4: 8 op, 544344250.00 ns, 68.0430 ms/op
+WorkloadResult   5: 8 op, 538680292.00 ns, 67.3350 ms/op
+WorkloadResult   6: 8 op, 547116583.00 ns, 68.3896 ms/op
+WorkloadResult   7: 8 op, 540026125.00 ns, 67.5033 ms/op
+WorkloadResult   8: 8 op, 546788791.00 ns, 68.3486 ms/op
+WorkloadResult   9: 8 op, 541569167.00 ns, 67.6961 ms/op
+WorkloadResult  10: 8 op, 542417625.00 ns, 67.8022 ms/op
+WorkloadResult  11: 8 op, 542841833.00 ns, 67.8552 ms/op
+WorkloadResult  12: 8 op, 539005792.00 ns, 67.3757 ms/op
+WorkloadResult  13: 8 op, 543847375.00 ns, 67.9809 ms/op
+WorkloadResult  14: 8 op, 541485834.00 ns, 67.6857 ms/op
+WorkloadResult  15: 8 op, 540239833.00 ns, 67.5300 ms/op
+
+// AfterAll
+// Benchmark Process 92929 has exited with code 0.
+
+Mean = 67.751 ms, StdErr = 0.085 ms (0.13%), N = 15, StdDev = 0.331 ms
+Min = 67.330 ms, Q1 = 67.517 ms, Median = 67.696 ms, Q3 = 67.918 ms, Max = 68.390 ms
+IQR = 0.401 ms, LowerFence = 66.914 ms, UpperFence = 68.520 ms
+ConfidenceInterval = [67.397 ms; 68.105 ms] (CI 99.9%), Margin = 0.354 ms (0.52% of Mean)
+Skewness = 0.52, Kurtosis = 2.17, MValue = 2
+
+// ** Remained 0 (0,0 %) benchmark(s) to run. Estimated finish 2023-11-28 0:40 (0h 0m from now) **
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts/results/Program-report.csv
+  BenchmarkDotNet.Artifacts/results/Program-report-github.md
+  BenchmarkDotNet.Artifacts/results/Program-report.html
+
+// * Detailed results *
+Program.Benchmark: DefaultJob
+Runtime = .NET 7.0.5 (7.0.523.17405), Arm64 RyuJIT AdvSIMD; GC = Concurrent Workstation
+Mean = 67.751 ms, StdErr = 0.085 ms (0.13%), N = 15, StdDev = 0.331 ms
+Min = 67.330 ms, Q1 = 67.517 ms, Median = 67.696 ms, Q3 = 67.918 ms, Max = 68.390 ms
+IQR = 0.401 ms, LowerFence = 66.914 ms, UpperFence = 68.520 ms
+ConfidenceInterval = [67.397 ms; 68.105 ms] (CI 99.9%), Margin = 0.354 ms (0.52% of Mean)
+Skewness = 0.52, Kurtosis = 2.17, MValue = 2
+-------------------- Histogram --------------------
+[67.153 ms ; 68.566 ms) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+// * Summary *
+
+BenchmarkDotNet v0.13.10, macOS Ventura 13.2.1 (22D68) [Darwin 22.3.0]
+Apple M1, 1 CPU, 8 logical and 8 physical cores
+.NET SDK 7.0.203
+  [Host]     : .NET 7.0.5 (7.0.523.17405), Arm64 RyuJIT AdvSIMD
+  DefaultJob : .NET 7.0.5 (7.0.523.17405), Arm64 RyuJIT AdvSIMD
+
+
+| Method    | Mean     | Error    | StdDev   |
+|---------- |---------:|---------:|---------:|
+| Benchmark | 67.75 ms | 0.354 ms | 0.331 ms |
+
+// * Legends *
+  Mean   : Arithmetic mean of all measurements
+  Error  : Half of 99.9% confidence interval
+  StdDev : Standard deviation of all measurements
+  1 ms   : 1 Millisecond (0.001 sec)
+
+// ***** BenchmarkRunner: End *****
+Run time: 00:00:15 (15.12 sec), executed benchmarks: 1
+
+Global total time: 00:00:17 (17.38 sec), executed benchmarks: 1
+// * Artifacts cleanup *
+Artifacts cleanup is finished
